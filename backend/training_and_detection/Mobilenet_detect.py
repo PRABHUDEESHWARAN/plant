@@ -12,7 +12,7 @@ with open('class_labels.json', 'r') as f:
 model = models.mobilenet_v2(pretrained=False)  # Set pretrained to False if you don't want the pre-trained weights
 num_classes = len(class_labels)  # Number of classes
 model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, num_classes)  # Modify the final classification layer
-model.load_state_dict(torch.load('m2.pth'))  # Load the trained model weights
+model.load_state_dict(torch.load('D:\\plant\\backend\\models\\m2.pth'))  # Load the trained model weights
 model.eval()  # Set the model to evaluation mode
 
 # Define the image transformation for inference (should match your training preprocessing)
@@ -23,7 +23,7 @@ transform = transforms.Compose([
 ])
 
 # Load and preprocess an image for inference
-image_path = 'leaves\\vethalai.jpg'
+image_path = 'D:\\plant\\backend\\leaves\\hibiscus.jpg'
 image = Image.open(image_path).convert('RGB')
 input_tensor = transform(image).unsqueeze(0)  # Add batch dimension
 
@@ -38,3 +38,4 @@ predicted_label = class_labels[str(predicted_class.item())]
 
 # Print the predicted label
 print(f'Predicted Class: {predicted_label}')
+
