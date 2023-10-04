@@ -4,10 +4,16 @@ import './index.css';
 
 import reportWebVitals from './reportWebVitals';
 import ImageUploader from './ImageUploader';
+import BasicExample from './navBar';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ImageUploader/>
+  </React.StrictMode>
+);
+root.render(
+  <React.StrictMode>
+    <BasicExample/>
   </React.StrictMode>
 );
 
