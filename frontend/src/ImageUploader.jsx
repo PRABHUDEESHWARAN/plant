@@ -1,6 +1,7 @@
 import React, { useState, useRef,useEffect } from 'react';
 import Webcam from 'react-webcam';
 
+
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -54,10 +55,10 @@ function ImageUploader() {
 
         setSelectedFile(file);
       } else {
-        console.error('Failed to capture screenshot.');
+        alert('Failed to capture screenshot.');
       }
     } else {
-      console.error('Webcam not initialized.');
+      alert('Webcam not initialized.');
     }
   };
   
