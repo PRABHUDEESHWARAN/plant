@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 // import myImage from './imgs/upload.png';
 
 
+
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -120,6 +121,27 @@ const handleSubmit = (event) => {
       alert('Error:', error);
     }
   };
+
+
+   
+   const captureImage = () => {
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot();
+      if (imageSrc) {
+        // Convert the image to a File object
+        const base64 = imageSrc.split(',')[1];
+        const blob = new Blob([Buffer.from(base64, 'base64')], { type: 'image/png' });
+        const file = new File([blob], 'webcam-snapshot.png', { type: 'image/png' });
+
+        setSelectedFile(file);
+      } else {
+        alert('Failed to capture screenshot.');
+      }
+    } else {
+      alert('Webcam not initialized.');
+    }
+  };
+  
 
   return (
     <div style={{ color: 'white' }}>
