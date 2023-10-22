@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 import reportWebVitals from './reportWebVitals';
+// import NavigationBar from './NavigationBar';
 import ImageUploader from './ImageUploader';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ImageUploader/>
+    {/* <NavigationBar/> */}
   </React.StrictMode>
 );
 
