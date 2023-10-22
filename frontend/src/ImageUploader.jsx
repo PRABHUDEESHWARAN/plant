@@ -1,30 +1,95 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
+// import myImage from './imgs/upload.png';
+
 
 function ImageUploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [image, setImage] = useState(null);
+  const [isWebcamOn, setIsWebcamOn] = useState(false);
+  const [showLabelInput, setShowLabelInput] = useState(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const [label, setLabel] = useState('');
+  const fileInputRef = useRef(null);
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const webcamRef = useRef(null);
 
+
   useEffect(() => {
-    // Start the webcam when the component mounts
-    if (webcamRef.current) {
+    // Start the webcam when the component mounts if isWebcamOn is true
+    if (isWebcamOn && webcamRef.current) {
       webcamRef.current.getScreenshot();
     }
-  }, []);
+  }, [isWebcamOn]);
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-
+  const handleFileSelect = () => {
+    if (!label) {
+      console.error('Label is required.');
+      return;
+    }
+  
+    const input = document.getElementById('fileInput');
+    const file = input.files[0];
+  
+    if (!file) {
+      console.error('No file selected.');
+      return;
+    }
+  
     setSelectedFile(file);
   };
+  
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen);
+  };
 
+  const enableButton = () => {
+    setButtonDisabled(false);
+  };
   const takeScreenshot = () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setImage(imageSrc);
-    setSelectedFile(imageSrc);
+    enableButton();  
+    // Check if imageSrc is null or undefined before calling dataURLtoBlob
+    if (imageSrc) {
+      const blob = dataURLtoBlob(imageSrc);
+      setSelectedFile(blob);
+      setImage(imageSrc);
+      setShowLabelInput(true);
+    } else {
+      console.error('Failed to capture screenshot.');
+    }
   };
+  
+
+  const toggleWebcam = () => {
+    setIsWebcamOn(!isWebcamOn);
+    enableButton();
+  };
+
+const dataURLtoBlob = (dataURL) => {
+  const byteString = atob(dataURL.split(',')[1]);
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' }); // Change the type based on the screenshot format
+};
+
+// ... (rest of the code)
+
+
+const handleLabelChange = (event) => {
+  setLabel(event.target.value);
+};
+const handleSubmit = (event) => {
+  event.preventDefault(); // Prevent the default form submission
+  handleFileSelect();
+  if (fileInputRef.current) {
+    fileInputRef.current.click(); // Programmatically open the file selection dialog
+  }
+};
 
   const handleUpload = async () => {
     if (!selectedFile && !image) return;
@@ -49,25 +114,37 @@ function ImageUploader() {
         console.log(data.class_name);
         setPrediction(data.class_name);
       } else {
-        console.error('Error:', response.statusText);
+        alert('Error:', response.statusText);
       }
     } catch (error) {
-      console.error('Error:', error);
+      alert('Error:', error);
     }
   };
 
   return (
     <div style={{ color: 'white' }}>
       <h1>ef-lora</h1>
-      <input type="file" accept=".jpg, .jpeg, .png, .svg" name="File"onChange={handleFileSelect} />
-      <button onClick={handleUpload}>Upload</button>
-      <div>
-        <Webcam className="WebCam" ref={webcamRef} />
-        <button className="TakeSSButton" onClick={takeScreenshot}>Take Screenshot</button>
-
-        {image && <img className="Image" src={image} alt="Screenshot" />}
-        <button className="UploadButton" onClick={handleUpload}>Upload Screenshot</button>
+      <button onClick={toggleMenu} className="hamburger-button">
+        &#9776; {/* This is the Unicode character for a hamburger icon */}
+      </button>
+      {isMenuOpen && <div>
+      <input type="file" accept=".jpg, .jpeg, .png, .svg" className="File" onChange={handleFileSelect}  x />
+        <button onClick={handleUpload}>Upload</button>
+        <button onClick={toggleWebcam}>{isWebcamOn ? 'Deactivate Cam' : 'Activate Cam'}</button>
+        <button onClick={takeScreenshot} disabled={isButtonDisabled}>Take Screenshot</button>
+        <button onClick={handleUpload} >Upload Screenshot</button>
       </div>
+      }
+      {isWebcamOn && <Webcam className="WebCam" ref={webcamRef}/>
+      }
+      {image && <img className="Image" src={image} alt="Screenshot" />}
+      {showLabelInput && ( // Only show the label input if showLabelInput is true
+        <form onSubmit={handleSubmit}> {/* Wrap the input and button in a form */}
+        <label htmlFor="labelInput" className='labelInput'>Enter the Image Name:</label>
+        <input type="text" id="labelInput" value={label} onChange={handleLabelChange} />
+        <button type="submit">Submit</button> {/* Add a submit button */}
+      </form>
+      )}
       {prediction && (
         <div>
           <h2>Prediction:</h2>

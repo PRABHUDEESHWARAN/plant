@@ -14,22 +14,69 @@ code {
 }
 .Image{
   position: absolute;
-  margin-right: 17em;
-  margin-top: 5em;
+  margin-left: 14em;
+  margin-top: -19em;
+  width: 28em;
+  height: 20em;
+  background-color: black;
+  border: 2px solid #ccc;
+  border-radius: 8px;
 }
 .WebCam{
-  margin-left: 5em;
-  margin-top: 5em;
+  margin-left: 2em;
+  margin-top: -20em;
+  width: 28em;
+  height: 20em;
+  background-color: black;
+  border: 2px solid #ccc;
+  border-radius: 8px;
 }
 button{
   color: black;
   background: white;
-  padding: 5px 5px 5px 5px;
+  margin-left: 95em;
+  padding: 2px 2px 2px 2px;
+  border-radius: 50%;
+  width: 3em; 
+  height: 3em; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
 }
 button:hover{
   background: black;
   color:white;
 }
-.UploadButton{
-  margin-left: 48em;
+.File{
+  margin-left: 90em;
+  width: 10em; 
+  height: 5em; 
+  border-radius: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+.File:hover{
+  background: black;
+  color:white;
+}
+.labelInput{
+  margin-left: 50em;
+}
+.menu {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: none;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.menu.show {
+  display: flex;
 }
